@@ -5,8 +5,22 @@
 
 extern Drive chassis;
 
-// Your motors, sensors, etc. should go here.  Below are examples
+inline pros::Motor bottomRoller(16);
+inline pros::Motor middleRoller(-6);
+inline pros::Motor topRoller(7);
 
-inline pros::Motor intake1(16);
-inline pros::Motor intake2(-6);
-inline pros::Motor intake3(7);
+inline pros::adi::DigitalOut gate('A');
+inline pros::adi::DigitalOut bottomLift('A');
+
+enum intakeStates
+{
+    IDLE = 0,
+    INTAKING = 1,
+    OUTTAKING = 2,
+    SCORING_HIGH = 3,
+    SCORING_LOW = 4
+};
+
+extern int intakeState;
+
+void intakeStateManager();
