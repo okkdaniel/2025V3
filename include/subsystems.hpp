@@ -17,10 +17,11 @@ enum intakeStates
     IDLE = 0,
     INTAKING = 1,
     OUTTAKING = 2,
-    SCORING_HIGH = 3,
-    SCORING_LOW = 4
+    SCORING = 3
 };
 
 extern int intakeState;
+extern bool isHighGoal;
 
 void intakeStateManager();
+void intakeTeleControl();
