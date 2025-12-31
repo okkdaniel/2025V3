@@ -21,13 +21,15 @@ enum intakeStates
     IDLE = 0,
     INTAKING = 1,
     OUTTAKING = 2,
-    SCORING = 3
+    SCORING = 3,
+    SORTING = 4
 };
 
 extern int intakeState;
 extern bool isHighGoal;
 extern bool isBlueAlliance;
 extern bool sorting;
+extern bool colorSortingEnabled;
 
 void intakeStateManager();
 void intakeTeleControl();

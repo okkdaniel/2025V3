@@ -10,6 +10,7 @@ int intakeState = IDLE;
 bool isHighGoal = true;
 bool isBlueAlliance = true;
 bool sorting = false;
+bool colorSortingEnabled = true;
 
 static uint32_t sortStartTime = 0;
 const uint32_t SORT_EJECT_TIME = 300; // time to eject wrong ball
@@ -49,11 +50,13 @@ void detectBall()
             maxHue = 230;
         }
 
-        pros::lcd::print(6, "Alliance: %s | Prox: %d | Hue: %d",
-                        isBlueAlliance ? "Blue" : "Red", proximity, hue);
+        pros::lcd::print(6, "Alliance: %s | Sort: %d | Prox: %d",
+                        isBlueAlliance ? "Blue" : "Red",
+                        colorSortingEnabled ? "ON" : "OFF",
+                        proximity);
         
         
-        if (intakeState == INTAKING && proximity > PROX_THRESHOLD)
+        if (colorSortingEnabled && intakeState == INTAKING && proximity > PROX_THRESHOLD)
         {
             if (hue >= minHue && hue <= maxHue)
             {
