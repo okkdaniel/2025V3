@@ -15,6 +15,19 @@ static uint32_t sortStartTime = 0;
 const uint32_t SORT_EJECT_TIME = 300; // time to eject wrong ball
 const uint32_t SORT_DELAY = 50; // delay before ejecting
 
+void setIntakeMotors(int bottom, int middle, int top)
+{
+    bottomRoller.move(bottom);
+    middleRoller.move(middle);
+    topRoller.move(top);
+}
+
+void setPistons(bool gateExtended, bool liftExtended)
+{
+    gate.set_value(gateExtended);
+    bottomLift.set_value(liftExtended);
+}
+
 void intakeTeleControl()
 {
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
