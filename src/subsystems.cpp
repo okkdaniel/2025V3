@@ -28,6 +28,47 @@ void setPistons(bool gateExtended, bool liftExtended)
     bottomLift.set_value(liftExtended);
 }
 
+void detectBall()
+{
+    while(true)
+    {
+        int proximity = color.get_proximity();
+        int hue = color.get_hue();
+
+        const int PROX_THRESHOLD = 40;
+
+        int minHue, maxHue;
+        if (isBlueAlliance)
+        {
+            minHue = 0;
+            maxHue = 30;
+        }
+        else
+        {
+            minHue = 200;
+            maxHue = 230;
+        }
+
+        pros::lcd::print(6, "Alliance: %s | Prox: %d | Hue: %d",
+                        isBlueAlliance ? "Blue" : "Red", proximity, hue);
+        
+        
+        if (intakeState == INTAKING && proximity > PROX_THRESHOLD)
+        {
+            if (hue >= minHue && hue <= maxHue)
+            {
+                if (!sorting)
+                {
+                    sorting = true;
+                    sortStartTime = pros::millis();
+                    pros::lcd::print(7, "Ejecting!");
+                }
+            }
+        }
+        pros::delay(10);
+    }
+}
+
 void intakeTeleControl()
 {
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
