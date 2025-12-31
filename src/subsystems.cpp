@@ -14,7 +14,10 @@ bool colorSortingEnabled = true;
 
 static uint32_t sortStartTime = 0;
 const uint32_t SORT_EJECT_TIME = 300; // time to eject wrong ball
-const uint32_t SORT_DELAY = 50; // delay before ejecting
+const uint32_t SORT_DELAY = 50; // delay before starting to sort
+
+const int INTAKE_SPEED = 127;
+const int EJECT_SPEED = -127;
 
 void setIntakeMotors(int bottom, int middle, int top)
 {
@@ -23,53 +26,137 @@ void setIntakeMotors(int bottom, int middle, int top)
     topRoller.move(top);
 }
 
+// Helper function to set pistons
 void setPistons(bool gateExtended, bool liftExtended)
 {
     gate.set_value(gateExtended);
     bottomLift.set_value(liftExtended);
 }
 
-void detectBall()
+bool detectBall()
 {
-    while(true)
+    int proximity = color.get_proximity();
+    int hue = color.get_hue();
+    
+    const int PROX_THRESHOLD = 40;
+
+    if (proximity < PROX_THRESHOLD)
     {
-        int proximity = color.get_proximity();
-        int hue = color.get_hue();
+        return false;
+    }
+    
 
-        const int PROX_THRESHOLD = 40;
+    int minHue, maxHue;
+    if (isBlueAlliance)
+    {
+        minHue = 200;
+        maxHue = 230;
+    }
+    else
+    {
+        minHue = 0;
+        maxHue = 30;
+    }
+    
+    return (hue >= minHue && hue <= maxHue);
+}
 
-        int minHue, maxHue;
-        if (isBlueAlliance)
+void detectionManager()
+{
+        while(true)
+    {
+        // detect during scoring state
+        if (colorSortingEnabled && intakeState == SCORING)
         {
-            minHue = 0;
-            maxHue = 30;
-        }
-        else
-        {
-            minHue = 200;
-            maxHue = 230;
-        }
-
-        pros::lcd::print(6, "Alliance: %s | Sort: %d | Prox: %d",
-                        isBlueAlliance ? "Blue" : "Red",
-                        colorSortingEnabled ? "ON" : "OFF",
-                        proximity);
-        
-        
-        if (colorSortingEnabled && intakeState == INTAKING && proximity > PROX_THRESHOLD)
-        {
-            if (hue >= minHue && hue <= maxHue)
+            if (detectBall())
             {
                 if (!sorting)
                 {
                     sorting = true;
                     sortStartTime = pros::millis();
-                    pros::lcd::print(7, "Ejecting!");
+                    pros::lcd::print(7, "Wrong color - ejecting!");
                 }
             }
         }
+        else
+        {
+            // reset
+            if (intakeState != SCORING)
+            {
+                sorting = false;
+            }
+        }
+        
+        int proximity = color.get_proximity();
+        pros::lcd::print(6, "Alliance: %s | Sort: %s | Prox: %d",
+                        isBlueAlliance ? "Blue" : "Red",
+                        colorSortingEnabled ? "ON" : "OFF",
+                        proximity);
+        
         pros::delay(10);
     }
+}
+
+void toggleAlliance()
+{
+    isBlueAlliance = !isBlueAlliance;
+    master.rumble(isBlueAlliance ? ".." : "-");
+}
+
+void toggleColorSorting()
+{
+    colorSortingEnabled = !colorSortingEnabled;
+    if (!colorSortingEnabled)
+    {
+        sorting = false;
+    }
+    master.rumble(colorSortingEnabled ? "." : "--");
+    pros::lcd::print(5, "Color Sort: %s", colorSortingEnabled ? "ON" : "OFF");
+}
+
+void intakeStateManager()
+{
+    if (sorting && colorSortingEnabled && intakeState == SCORING)
+    {
+        uint32_t sortElapsed = pros::millis() - sortStartTime;
+
+        if (sortElapsed < SORT_DELAY)
+        {
+            if (isHighGoal)
+            {
+                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, INTAKE_SPEED);
+                setPistons(false, false);
+            }
+        }
+
+        else if (sortElapsed < SORT_DELAY + SORT_EJECT_TIME)
+        {
+            if (isHighGoal)
+            {
+                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, EJECT_SPEED);
+                setPistons(true, false);
+            }
+            else
+            {
+                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, INTAKE_SPEED);
+                setPistons(false, false);
+            }
+        }
+        
+        else
+        {
+            sorting = false;
+        }
+
+        return;
+    }
+
+    if (intakeState == IDLE)
+    {
+        setIntakeMotors(0,0,0);
+        setPistons(true, false);
+    }
+    else if (intakeState == INTAKING)
 }
 
 void intakeTeleControl()
@@ -96,6 +183,11 @@ void intakeTeleControl()
     {
         isHighGoal = !isHighGoal;
         master.rumble(isHighGoal ? "." : "-"); // vibration indicator
+    }
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+    {
+        toggleColorSorting();
     }
 }
 

@@ -12,7 +12,7 @@ inline pros::Motor topRoller(7);
 inline pros::adi::DigitalOut gate('A');
 inline pros::adi::DigitalOut bottomLift('A');
 
-inline pros::Optical color('C');
+inline pros::Optical color(10);
 
 extern pros::Controller master;
 
@@ -22,7 +22,6 @@ enum intakeStates
     INTAKING = 1,
     OUTTAKING = 2,
     SCORING = 3,
-    SORTING = 4
 };
 
 extern int intakeState;
@@ -33,13 +32,7 @@ extern bool colorSortingEnabled;
 
 void intakeStateManager();
 void intakeTeleControl();
-void detectBall();
+bool detectBall();
+void detectionManager();
 void toggleAlliance();
-void setIntakeMotors(int bottom, int middle, int top);
-void setPiston(bool gateExtended, bool liftExtended);
-
-void setIntake(int state);
-void setHighGoal(bool high);
-void setAlliance(bool isBlue);
-
-void colorDetectionTask();
+void toggleColorSorting();
