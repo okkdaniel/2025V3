@@ -19,15 +19,15 @@ const uint32_t SORT_DELAY = 50; // delay before starting to sort
 const int INTAKE_SPEED = 127;
 const int EJECT_SPEED = -127;
 
-void setIntakeMotors(int bottom, int middle, int top)
+void setIntakeMotors(int bottom,int middle,int top)
 {
     bottomRoller.move(bottom);
     middleRoller.move(middle);
     topRoller.move(top);
 }
 
-// Helper function to set pistons
-void setPistons(bool gateExtended, bool liftExtended)
+
+void setPistons(bool gateExtended,bool liftExtended)
 {
     gate.set_value(gateExtended);
     bottomLift.set_value(liftExtended);
@@ -65,7 +65,7 @@ void detectionManager()
 {
         while(true)
     {
-        // detect during scoring state
+        // detect during scoring
         if (colorSortingEnabled && intakeState == SCORING)
         {
             if (detectBall())
@@ -74,13 +74,13 @@ void detectionManager()
                 {
                     sorting = true;
                     sortStartTime = pros::millis();
-                    pros::lcd::print(7, "Wrong color - ejecting!");
+                    pros::lcd::print(7, "Ejecting!");
                 }
             }
         }
         else
         {
-            // reset
+            // reset flag
             if (intakeState != SCORING)
             {
                 sorting = false;
@@ -100,7 +100,7 @@ void detectionManager()
 void toggleAlliance()
 {
     isBlueAlliance = !isBlueAlliance;
-    master.rumble(isBlueAlliance ? ".." : "-");
+    master.rumble(isBlueAlliance ? "..." : "---");
 }
 
 void toggleColorSorting()
@@ -110,10 +110,11 @@ void toggleColorSorting()
     {
         sorting = false;
     }
-    master.rumble(colorSortingEnabled ? "." : "--");
+    master.rumble(colorSortingEnabled ? ".." : "--");
     pros::lcd::print(5, "Color Sort: %s", colorSortingEnabled ? "ON" : "OFF");
 }
 
+// if else hell
 void intakeStateManager()
 {
     if (sorting && colorSortingEnabled && intakeState == SCORING)
@@ -124,7 +125,7 @@ void intakeStateManager()
         {
             if (isHighGoal)
             {
-                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, INTAKE_SPEED);
+                setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
                 setPistons(false, false);
             }
         }
@@ -133,12 +134,12 @@ void intakeStateManager()
         {
             if (isHighGoal)
             {
-                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, EJECT_SPEED);
+                setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,EJECT_SPEED);
                 setPistons(true, false);
             }
             else
             {
-                setIntakeMotors(INTAKE_SPEED, INTAKE_SPEED, INTAKE_SPEED);
+                setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
                 setPistons(false, false);
             }
         }
@@ -154,9 +155,32 @@ void intakeStateManager()
     if (intakeState == IDLE)
     {
         setIntakeMotors(0,0,0);
-        setPistons(true, false);
+        setPistons(true,false);
     }
     else if (intakeState == INTAKING)
+    {
+        setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,0);
+        setPistons(true,false);
+
+    }
+    else if (intakeState == OUTTAKING)
+    {
+        setIntakeMotors(EJECT_SPEED,EJECT_SPEED,EJECT_SPEED);
+        setPistons(true,true);
+    }
+    else if(intakeState == SCORING)
+    {
+        if (isHighGoal)
+        {
+            setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
+            setPistons(false,false);
+        }
+        else
+        {
+            setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
+            setPistons(true,false);
+        }
+    }
 }
 
 void intakeTeleControl()
@@ -182,7 +206,7 @@ void intakeTeleControl()
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
     {
         isHighGoal = !isHighGoal;
-        master.rumble(isHighGoal ? "." : "-"); // vibration indicator
+        master.rumble(isHighGoal ? "." : "-");
     }
 
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
@@ -190,4 +214,3 @@ void intakeTeleControl()
         toggleColorSorting();
     }
 }
-

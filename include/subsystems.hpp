@@ -31,8 +31,14 @@ extern bool sorting;
 extern bool colorSortingEnabled;
 
 void intakeStateManager();
-void intakeTeleControl();
 bool detectBall();
 void detectionManager();
+
+void intakeTeleControl();
 void toggleAlliance();
 void toggleColorSorting();
+
+void setIntake(int state);
+void setHighGoal(bool high);
+void setAlliance(bool isBlue);
+void setColorSorting(bool enabled);
