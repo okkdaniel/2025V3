@@ -214,3 +214,22 @@ void intakeTeleControl()
         toggleColorSorting();
     }
 }
+
+void setIntakeState(int state)
+{
+    intakeState = state;
+}
+
+void setHighGoal(bool high)
+{
+    isHighGoal = high;
+}
+
+void setColorSorting(bool enabled)
+{
+    colorSortingEnabled = enabled;
+    if (!enabled)
+    {
+        sorting = false;
+    }
+}
