@@ -87,11 +87,11 @@ void detectionManager()
             }
         }
         
-        int proximity = color.get_proximity();
-        pros::lcd::print(6, "Alliance: %s | Sort: %s | Prox: %d",
+        int hue = color.get_hue();
+        pros::lcd::print(6, "Alliance: %s | Sort: %s | Hue: %d",
                         isBlueAlliance ? "Blue" : "Red",
                         colorSortingEnabled ? "ON" : "OFF",
-                        proximity);
+                        hue);
         
         pros::delay(10);
     }
@@ -111,7 +111,7 @@ void toggleColorSorting()
         sorting = false;
     }
     master.rumble(colorSortingEnabled ? ".." : "--");
-    pros::lcd::print(5, "Color Sort: %s", colorSortingEnabled ? "ON" : "OFF");
+    // pros::lcd::print(5, "Color Sort: %s", colorSortingEnabled ? "ON" : "OFF");
 }
 
 // if else hell

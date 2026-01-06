@@ -38,7 +38,7 @@ void initialize() {
   // Look at your horizontal tracking wheel and decide if it's in front of the midline of your robot or behind it
   //  - change `back` to `front` if the tracking wheel is in front of the midline
   //  - ignore this if you aren't using a horizontal tracker
-  // chassis.odom_tracker_back_set(&horiz_tracker);
+  chassis.odom_tracker_back_set(&horiz_tracker);
   // Look at your vertical tracking wheel and decide if it's to the left or right of the center of the robot
   //  - change `left` to `right` if the tracking wheel is to the right of the centerline
   //  - ignore this if you aren't using a vertical tracker
@@ -213,11 +213,11 @@ void ez_template_extras() {
       chassis.pid_tuner_toggle();
 
     // Trigger the selected autonomous routine
-    if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
-      pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
-      autonomous();
-      chassis.drive_brake_set(preference);
-    }
+    // if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
+    //   pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
+    //   autonomous();
+    //   chassis.drive_brake_set(preference);
+    // }
 
     // Allow PID Tuner to iterate
     chassis.pid_tuner_iterate();
@@ -260,6 +260,17 @@ void opcontrol() {
     // . . .
     // Put more user control code here!
     // . . .
+
+
+    // if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+    // flipdown.set_value(true);
+    // }
+    // if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+    // flipdown.set_value(false);
+    // }
+    // {
+    //   autonomous();
+    // }
 
     intakeTeleControl();
     intakeStateManager();

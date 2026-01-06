@@ -5,14 +5,17 @@
 
 extern Drive chassis;
 
-inline pros::Motor bottomRoller(16);
-inline pros::Motor middleRoller(-6);
-inline pros::Motor topRoller(7);
+inline pros::Motor bottomRoller(-16);
+inline pros::Motor middleRoller(6);
+inline pros::Motor topRoller(-7);
 
-inline pros::adi::DigitalOut gate('A');
-inline pros::adi::DigitalOut bottomLift('A');
+inline pros::adi::DigitalOut gate('D');
+inline pros::adi::DigitalOut bottomLift('H');
+inline pros::adi::DigitalOut descore('E');
+inline pros::adi::DigitalOut parking('G');
+inline pros::adi::DigitalOut flipdown('F');
 
-inline pros::Optical color(10);
+inline pros::Optical color(2);
 
 extern pros::Controller master;
 
