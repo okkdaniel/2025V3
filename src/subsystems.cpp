@@ -159,7 +159,7 @@ void intakeStateManager()
     }
     else if (intakeState == INTAKING)
     {
-        setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,0);
+        setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
         setPistons(true,false);
 
     }
@@ -168,20 +168,27 @@ void intakeStateManager()
         setIntakeMotors(EJECT_SPEED,EJECT_SPEED,EJECT_SPEED);
         setPistons(true,true);
     }
-    else if(intakeState == SCORING)
-    {
-        if (isHighGoal)
+    else if(intakeState == SCORINGHIGH)
+    { 
         {
-            setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
+            bool isHighGoal = false;
+            setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,EJECT_SPEED);
+            setPistons(true,false);
+        } 
+    }
+    else if(intakeState == SCORINGMID)
+        {
+            bool isHighGoal = true;
+            setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,EJECT_SPEED);
             setPistons(false,false);
         }
         else
         {
             setIntakeMotors(INTAKE_SPEED,INTAKE_SPEED,INTAKE_SPEED);
-            setPistons(true,false);
+            setPistons(false,false);
         }
     }
-}
+
 
 void intakeTeleControl()
 {
@@ -193,9 +200,14 @@ void intakeTeleControl()
     {
         intakeState = OUTTAKING;
     }
-    else if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) && (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)))
+    // else if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) && (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)))
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
     {
-        intakeState = SCORING;
+        intakeState = SCORINGHIGH;
+    }
+    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
+    {
+        intakeState = SCORINGMID;
     }
     else
     {
@@ -203,17 +215,32 @@ void intakeTeleControl()
     }
 
     // high/low toggle
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
+  /*   if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
     {
         isHighGoal = !isHighGoal;
         master.rumble(isHighGoal ? "." : "-");
     }
-
+ */
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
     {
         toggleColorSorting();
     }
 }
+
+/* void colorSortingTask()
+{
+if (sorting && colorSortingEnabled &&)
+    {
+        while (true)
+        {
+            intakeStateManager();
+            pros::delay(10);
+        }
+    }
+
+
+
+} */
 
 void setIntakeState(int state)
 {

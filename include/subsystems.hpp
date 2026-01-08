@@ -11,9 +11,9 @@ inline pros::Motor topRoller(-7);
 
 inline pros::adi::DigitalOut gate('D');
 inline pros::adi::DigitalOut bottomLift('H');
-inline pros::adi::DigitalOut descore('E');
 inline pros::adi::DigitalOut parking('G');
-inline pros::adi::DigitalOut flipdown('F');
+inline ez::Piston descore('E');
+inline ez::Piston flipdown('F');
 
 inline pros::Optical color(2);
 
@@ -24,7 +24,9 @@ enum intakeStates
     IDLE = 0,
     INTAKING = 1,
     OUTTAKING = 2,
-    SCORING = 3,
+    SCORINGHIGH = 3,
+    SCORINGMID = 4,
+    SCORING = 5,
 };
 
 extern int intakeState;
@@ -36,6 +38,7 @@ extern bool colorSortingEnabled;
 void intakeStateManager();
 bool detectBall();
 void detectionManager();
+void colorSortingTask();
 
 void intakeTeleControl();
 void toggleAlliance();

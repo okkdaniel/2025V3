@@ -8,8 +8,8 @@
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {11, 12, 13},     // Left Chassis Ports (negative port will reverse it!)
-    {-20, -19, -18},  // Right Chassis Ports (negative port will reverse it!)
+    {-11, -12, -13},     // Left Chassis Ports (negative port will reverse it!)
+    {20, 19, 18},  // Right Chassis Ports (negative port will reverse it!)
 
     17,      // IMU Port
     3.25,  // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
@@ -80,7 +80,6 @@ void initialize() {
   master.rumble(chassis.drive_imu_calibrated() ? "." : "---");
 
   color.set_led_pwm(100);
-
   pros::Task sort(detectionManager);
 }
 
@@ -209,8 +208,8 @@ void ez_template_extras() {
     //  When enabled:
     //  * use A and Y to increment / decrement the constants
     //  * use the arrow keys to navigate the constants
-    if (master.get_digital_new_press(DIGITAL_X))
-      chassis.pid_tuner_toggle();
+    // if (master.get_digital_new_press(DIGITAL_X))
+      // chassis.pid_tuner_toggle();
 
     // Trigger the selected autonomous routine
     // if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
@@ -261,16 +260,22 @@ void opcontrol() {
     // Put more user control code here!
     // . . .
 
+    flipdown.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_X));
+    descore.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_A));
 
     // if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
     // flipdown.set_value(true);
-    // }
-    // if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-    // flipdown.set_value(false);
-    // }
-    // {
-    //   autonomous();
-    // }
+    //  }
+    //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+    //  flipdown.set_value(false);
+    //  }
+    //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+    //  descore.set_value(true);
+    //  }
+    //  else {
+    //  descore.set_value(false);
+    //  }
+
 
     intakeTeleControl();
     intakeStateManager();
