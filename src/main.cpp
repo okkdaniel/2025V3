@@ -20,7 +20,7 @@ ez::Drive chassis(
 //  - you should get positive values on the encoders going FORWARD and RIGHT
 // - `2.75` is the wheel diameter
 // - `4.0` is the distance from the center of the wheel to the center of the robot
-ez::tracking_wheel horiz_tracker(15, 2.0, 1.0);  // This tracking wheel is perpendicular to the drive wheels
+ez::tracking_wheel horiz_tracker(15, 2.0, 3.5);  // This tracking wheel is perpendicular to the drive wheels
 // ez::tracking_wheel vert_tracker(9, 2.75, 4.0);   // This tracking wheel is parallel to the drive wheels
 
 /**
@@ -58,18 +58,19 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.autons_add({
-      {"Drive\n\nDrive forward and come back", drive_example},
-      {"Turn\n\nTurn 3 times.", turn_example},
-      {"Drive and Turn\n\nDrive forward, turn, come back", drive_and_turn},
-      {"Drive and Turn\n\nSlow down during drive", wait_until_change_speed},
-      {"Swing Turn\n\nSwing in an 'S' curve", swing_example},
-      {"Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining},
-      {"Combine all 3 movements", combining_movements},
-      {"Interference\n\nAfter driving forward, robot performs differently if interfered or not", interfered_example},
-      {"Simple Odom\n\nThis is the same as the drive example, but it uses odom instead!", odom_drive_example},
-      {"Pure Pursuit\n\nGo to (0, 30) and pass through (6, 10) on the way.  Come back to (0, 0)", odom_pure_pursuit_example},
-      {"Pure Pursuit Wait Until\n\nGo to (24, 24) but start running an intake once the robot passes (12, 24)", odom_pure_pursuit_wait_until_example},
-      {"Boomerang\n\nGo to (0, 24, 45) then come back to (0, 0, 0)", odom_boomerang_example},
+      // {"Drive\n\nDrive forward and come back", drive_example},
+      // {"Turn\n\nTurn 3 times.", turn_example},
+      // {"Drive and Turn\n\nDrive forward, turn, come back", drive_and_turn},
+      // {"Drive and Turn\n\nSlow down during drive", wait_until_change_speed},
+      // {"Swing Turn\n\nSwing in an 'S' curve", swing_example},
+      // {"Motion Chaining\n\nDrive forward, turn, and come back, but blend everything together :D", motion_chaining},
+      // {"Combine all 3 movements", combining_movements},
+      // {"Interference\n\nAfter driving forward, robot performs differently if interfered or not", interfered_example},
+      // {"Simple Odom\n\nThis is the same as the drive example, but it uses odom instead!", odom_drive_example},
+      // {"Pure Pursuit\n\nGo to (0, 30) and pass through (6, 10) on the way.  Come back to (0, 0)", odom_pure_pursuit_example},
+      // {"Pure Pursuit Wait Until\n\nGo to (24, 24) but start running an intake once the robot passes (12, 24)", odom_pure_pursuit_wait_until_example},
+      // {"Boomerang\n\nGo to (0, 24, 45) then come back to (0, 0, 0)", odom_boomerang_example},
+      {"Test Odom\n\nTest the odom functionality", testOdom},
       {"Boomerang Pure Pursuit\n\nGo to (0, 24, 45) on the way to (24, 24) then come back to (0, 0, 0)", odom_boomerang_injected_pure_pursuit_example},
       {"Measure Offsets\n\nThis will turn the robot a bunch of times and calculate your offsets for your tracking wheels.", measure_offsets},
   });
@@ -120,7 +121,7 @@ void autonomous() {
   chassis.pid_targets_reset();                // Resets PID targets to 0
   chassis.drive_imu_reset();                  // Reset gyro position to 0
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
-  chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
+  // chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
 
   /*
@@ -212,11 +213,11 @@ void ez_template_extras() {
       // chassis.pid_tuner_toggle();
 
     // Trigger the selected autonomous routine
-    // if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
-    //   pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
-    //   autonomous();
-    //   chassis.drive_brake_set(preference);
-    // }
+    if (master.get_digital(DIGITAL_LEFT) && master.get_digital(DIGITAL_DOWN)) {
+       pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
+       autonomous();
+       chassis.drive_brake_set(preference);
+     }
 
     // Allow PID Tuner to iterate
     chassis.pid_tuner_iterate();

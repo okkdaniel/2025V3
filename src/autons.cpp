@@ -57,7 +57,7 @@ void drive_example() {
   // The third parameter is a boolean (true or false) for enabling/disabling a slew at the start of drive motions
   // for slew, only enable it when the drive distance is greater than the slew distance + a few inches
 
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(24_in, 70, true);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-12_in, DRIVE_SPEED);
@@ -161,7 +161,7 @@ void motion_chaining() {
   // Motion chaining is where motions all try to blend together instead of individual movements.
   // This works by exiting while the robot is still moving a little bit.
   // To use this, replace pid_wait with pid_wait_quick_chain.
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(24_in, 60, true);
   chassis.pid_wait();
 
   chassis.pid_turn_set(45_deg, TURN_SPEED);
@@ -259,9 +259,8 @@ void odom_drive_example() {
 ///
 void odom_pure_pursuit_example() {
   // Drive to 0, 30 and pass through 6, 10 and 0, 20 on the way, with slew
-  chassis.pid_odom_set({{{6_in, 10_in}, fwd, DRIVE_SPEED},
-                        {{0_in, 20_in}, fwd, DRIVE_SPEED},
-                        {{0_in, 30_in}, fwd, DRIVE_SPEED}},
+  chassis.pid_odom_set({{{6_in, 10_in}, fwd, 60},
+                        {{0_in, 20_in}, fwd, 60}},
                        true);
   chassis.pid_wait();
 
@@ -376,3 +375,18 @@ void measure_offsets() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+
+void testOdom()
+{
+  chassis.odom_xyt_set(48_in, 12_in, 0_deg);
+  descore.set(true);
+  chassis.pid_odom_set({{45_in, 40_in}, fwd, 90});
+  chassis.pid_wait_quick_chain();
+  chassis.pid_turn_set({72_in, 40_in}, fwd, TURN_SPEED);
+  flipdown.set(true);
+  chassis.pid_wait_quick_chain();
+  setIntakeState(INTAKING);
+  chassis.pid_odom_set({{50_in, 40_in}, fwd, 50});
+  chassis.pid_wait();
+  pros::delay(2000);
+}

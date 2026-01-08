@@ -48,3 +48,4 @@ void setIntake(int state);
 void setHighGoal(bool high);
 void setAlliance(bool isBlue);
 void setColorSorting(bool enabled);
+void setIntakeState(int state);
