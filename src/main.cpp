@@ -121,6 +121,8 @@ void competition_initialize() {
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+pros::Task* intakeTask = nullptr;
+
 void autonomous() {
   // Start the intake state manager task
   chassis.pid_targets_reset();                // Resets PID targets to 0
@@ -128,16 +130,6 @@ void autonomous() {
   chassis.drive_sensor_reset();               // Reset drive sensors to 0
   chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency
-
-  pros::Task intakeStateMachine([&]()
-  {
-    while (true)
-    {
-        intakeStateManager();
-        pros::delay(20);
-    }
-    
-  });
 
   /*
   Odometry and Pure Pursuit are not magic
@@ -152,7 +144,29 @@ void autonomous() {
   to be consistent
   */
 
+  if(intakeTask != nullptr)
+  {
+    intakeTask->remove();
+    delete intakeTask;
+  }
+
+  intakeTask = new pros::Task([&]()
+  {
+    while(true)
+    {
+        intakeStateManager();
+        pros::delay(20);
+    }
+  }, TASK_PRIORITY_DEFAULT + 1);
+
   ez::as::auton_selector.selected_auton_call();  // Calls selected auton from autonomous selector
+
+  if(intakeTask != nullptr)
+  {
+    intakeTask->remove();
+    delete intakeTask;
+    intakeTask = nullptr;
+  }
 }
 
 /**
@@ -262,6 +276,8 @@ void opcontrol() {
   // This is preference to what you like to drive on
   chassis.drive_brake_set(MOTOR_BRAKE_COAST);
 
+  wing.set(true);
+
   while (true) {
     // Gives you some extras to make EZ-Template ezier
     ez_template_extras();
@@ -287,10 +303,12 @@ void opcontrol() {
     //   autonomous();
     // }
 
+    wing.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y));
+    flipdown.button_toggle(master.get_digital(pros::E_CONTROLLER_DIGITAL_B));
 
-
+    intakeStateManager();
     intakeTeleControl();
-    // printData();
+    printData();
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

@@ -7,8 +7,8 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 int intakeState = IDLE;
-bool isHighGoal = true;
-bool isBlueAlliance = true;
+// bool isHighGoal = true;
+// bool isBlueAlliance = true;
 // bool sorting = false;
 // bool colorSortingEnabled = true;
 
@@ -181,7 +181,7 @@ void intakeStateManager()
             setPistons(true,false);    
         }
 
-        pros::delay(30);
+        // pros::delay(20);
     // }
 }
 
@@ -238,7 +238,7 @@ void setColorSorting(bool enabled)
 void printData()
 {
     pros::lcd::print(6, "Intake State: %d", intakeState);
-    pros::lcd::print(7, "High Goal: %s", isHighGoal ? "HIGH" : "LOW");
+    // pros::lcd::print(7, "High Goal: %s", isHighGoal ? "HIGH" : "LOW");
 
     // pros::lcd::print(2, "Color Sort: %s", colorSortingEnabled ? "ON" : "OFF");
     // pros::lcd::print(3, "Sorting: %s", sorting ? "YES" : "NO");

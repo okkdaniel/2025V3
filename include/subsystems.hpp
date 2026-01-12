@@ -11,7 +11,7 @@ inline pros::Motor topRoller(-7);
 
 inline ez::Piston gate('D');
 inline ez::Piston bottomLift('H');
-inline ez::Piston descore('E');
+inline ez::Piston wing('E');
 inline ez::Piston parking('G');
 inline ez::Piston flipdown('F');
 

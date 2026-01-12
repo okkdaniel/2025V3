@@ -1,4 +1,5 @@
 #include "main.h"
+#include "subsystems.hpp"
 
 /////
 // For installation, upgrading, documentations, and tutorials, check out our website!
@@ -378,31 +379,42 @@ void measure_offsets() {
 
 void fifteenRight()
 {
-  chassis.odom_xyt_set(-48_in, -11.5_in, 90_deg);
+  // pros::Task intakeStateMachine([&]()
+  // {
+  //   while (true)
+  //   {
+  //       intakeStateManager();
+  //       pros::delay(20);
+  //   }
+    
+  // });
 
-  chassis.pid_odom_set({{{-32_in, -19_in}, fwd, 70},
+  chassis.odom_xyt_set(-48_in, -11.5_in, 90_deg);
+  wing.set(true);
+
+  chassis.pid_odom_set({{{-32_in, -19_in}, fwd, 75},
                         {{-20_in, -23_in},fwd, 30}},
                         true);
-  chassis.pid_wait_until_index(1);
+  chassis.pid_wait_until_index(0);
   setIntake(INTAKING);
   // intakeState = INTAKING;
   chassis.pid_wait();
   chassis.pid_turn_set({0_in, 0_in}, fwd, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_odom_set({{-16_in, -12_in}, fwd, 50});
+  chassis.pid_odom_set({{-14_in, -14_in}, fwd, 65});
   chassis.pid_wait_quick_chain();
   chassis.pid_turn_set({0_in,0_in},fwd,TURN_SPEED);
   chassis.pid_wait();
   setIntake(OUTTAKING);
   // intakeState = OUTTAKING;
   pros::delay(2000);
-  chassis.pid_odom_set({{-9_in, -31_in},rev,90});
+  // chassis.pid_odom_set({{-9_in, -31_in},rev,90});
   setIntake(IDLE);
   // intakeState = IDLE;
-  chassis.pid_wait_quick_chain();
-  chassis.pid_turn_set({-4_in,-47_in},fwd,TURN_SPEED);
-  chassis.pid_wait();
-  flipdown.set(true);
+  // chassis.pid_wait_quick_chain();
+  // chassis.pid_turn_set({-4_in,-47_in},fwd,TURN_SPEED);
+  // chassis.pid_wait();
+  // flipdown.set(true);
   // chassis.pid_wait();
   // chassis.pid_odom_set({{-47_in, -47_in}, rev, 90});
   // chassis.pid_wait();
@@ -427,11 +439,10 @@ chassis.odom_xyt_set(-62_in, 16_in, 90_deg);
   chassis.pid_odom_set({{-28_in, 22_in}, fwd, 90});
   chassis.pid_wait();
   intakeState = INTAKING;
-    chassis.pid_wait();
+  chassis.pid_wait();
   chassis.pid_turn_set({0_in, 0_in}, fwd, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_odom_set({{-13_in, 13_in}, fwd, 50});
-  chassis.pid_wait();
   intakeState = LOW_SCORING;
   chassis.pid_wait();
   pros::delay(2000);
