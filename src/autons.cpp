@@ -397,7 +397,6 @@ void fifteenRight()
                         true);
   chassis.pid_wait_until_index(0);
   setIntake(INTAKING);
-  // intakeState = INTAKING;
   chassis.pid_wait();
   chassis.pid_turn_set({0_in, 0_in}, fwd, TURN_SPEED);
   chassis.pid_wait();
@@ -406,28 +405,26 @@ void fifteenRight()
   chassis.pid_turn_set({0_in,0_in},fwd,TURN_SPEED);
   chassis.pid_wait();
   setIntake(OUTTAKING);
-  // intakeState = OUTTAKING;
   pros::delay(2000);
-  // chassis.pid_odom_set({{-9_in, -31_in},rev,90});
+  chassis.pid_odom_set({{-9_in, -31_in},rev,90});
   setIntake(IDLE);
-  // intakeState = IDLE;
-  // chassis.pid_wait_quick_chain();
-  // chassis.pid_turn_set({-4_in,-47_in},fwd,TURN_SPEED);
-  // chassis.pid_wait();
-  // flipdown.set(true);
-  // chassis.pid_wait();
-  // chassis.pid_odom_set({{-47_in, -47_in}, rev, 90});
-  // chassis.pid_wait();
-  // flipdown.set(true);
-  // chassis.pid_wait();
-  // chassis.pid_turn_set({-67_in, -47_in}, fwd, TURN_SPEED);
-  // chassis.pid_wait();
-  // intakeState = INTAKING;
-  // chassis.pid_wait();
-  // chassis.pid_odom_set({{-59_in, -47_in}, fwd, 90});
-  // chassis.pid_wait();
-  // chassis.pid_odom_set({{-30_in, -47_in}, rev, 90});
-  // intakeState = HIGH_SCORING;
+  chassis.pid_wait_quick_chain();
+  chassis.pid_turn_set({-4_in,-47_in},fwd,TURN_SPEED);
+  chassis.pid_wait();
+  flipdown.set(true);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-47_in, -47_in}, rev, 90});
+   chassis.pid_wait();
+   flipdown.set(true);
+   chassis.pid_wait();
+   chassis.pid_turn_set({-67_in, -47_in}, fwd, TURN_SPEED);
+   chassis.pid_wait();
+   setIntake(INTAKING);
+  chassis.pid_wait();
+   chassis.pid_odom_set({{-59_in, -47_in}, fwd, 90});
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-30_in, -47_in}, rev, 90});
+    setIntake(HIGH_SCORING);
   //score blocks from loader
   //Use descore if time?
 }
@@ -438,12 +435,12 @@ chassis.odom_xyt_set(-62_in, 16_in, 90_deg);
   chassis.pid_wait();
   chassis.pid_odom_set({{-28_in, 22_in}, fwd, 90});
   chassis.pid_wait();
-  intakeState = INTAKING;
+   setIntake(INTAKING);
   chassis.pid_wait();
   chassis.pid_turn_set({0_in, 0_in}, fwd, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_odom_set({{-13_in, 13_in}, fwd, 50});
-  intakeState = LOW_SCORING;
+  setIntake(LOW_SCORING);
   chassis.pid_wait();
   pros::delay(2000);
   chassis.pid_wait();
@@ -453,12 +450,73 @@ chassis.odom_xyt_set(-62_in, 16_in, 90_deg);
   chassis.pid_wait();
   chassis.pid_turn_set({-67_in, 47_in}, fwd, TURN_SPEED);
   chassis.pid_wait();
-  intakeState = INTAKING;
+  setIntake(INTAKING);
   chassis.pid_wait();
   chassis.pid_odom_set({{-59_in, 47_in}, fwd, 90});
   chassis.pid_wait();
   chassis.pid_odom_set({{-30_in, 47_in}, rev, 90});
-  intakeState = HIGH_SCORING;
+  setIntake(HIGH_SCORING);
   //score blocks from loader
   //Use descore if time?
+}
+
+void Skills()
+{
+chassis.odom_xyt_set(-58_in, -16_in, 90_deg);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-28_in, -22_in}, fwd, 90});
+  chassis.pid_wait();
+   setIntake(INTAKING);
+  chassis.pid_wait();
+  chassis.pid_turn_set({0_in, 0_in}, fwd, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-13_in, -13_in}, fwd, 50});
+  setIntake(OUTTAKING);
+  chassis.pid_wait();
+  pros::delay(2000);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-47_in, -47_in}, rev, 90});
+  chassis.pid_wait();
+  setIntake(IDLE);
+  chassis.pid_wait();
+  flipdown.set(true);
+  chassis.pid_wait();
+  chassis.pid_turn_set({-67_in, -47_in}, fwd, TURN_SPEED);
+  chassis.pid_wait();
+  setIntake(INTAKING);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{-59_in, -47_in}, fwd, 90});
+  chassis.pid_wait();
+  flipdown.set(false);
+  chassis.pid_wait();
+  setIntake(IDLE);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{{-6_in, -62_in}, fwd, 75},
+                        {{40_in, -47_in},fwd, 30}},
+                        true);
+  chassis.pid_wait_until_index(0);
+  chassis.pid_wait();
+  chassis.pid_turn_set({67_in, -47_in}, fwd, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{28_in, -47_in}, rev, 90});
+  chassis.pid_wait();
+  setIntake(HIGH_SCORING);
+  chassis.pid_wait();
+  pros::delay(2000);
+  chassis.pid_wait();
+  flipdown.set(true);
+  chassis.pid_wait();
+  setIntake(INTAKING);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{59_in, -47_in}, fwd, 90});
+  chassis.pid_wait();
+  pros::delay(2000);
+  chassis.pid_wait();
+  chassis.pid_odom_set({{28_in, -47_in}, rev, 90});
+  chassis.pid_wait();
+  setIntake(HIGH_SCORING);
+  chassis.pid_wait();
+  pros::delay(2000);
+  chassis.pid_wait();
+  // Right side end 
 }
